@@ -26,7 +26,8 @@ mv ~/.ssh/config.tmp ~/.ssh/config
 echo "✅ Configurazione SSH aggiornata per $CODESPACE_NAME"
 
 # Avvia JetBrains Gateway (modifica il percorso se necessario)
-JETBRAINS_GATEWAY="/opt/jetbrains-gateway/bin/gateway.sh"  # Linux
+JETBRAINS_GATEWAY="/Applications/JetBrains Gateway.app/Contents/MacOS/jetbrains-gateway"
+# Per Unix: JETBRAINS_GATEWAY="/opt/jetbrains-gateway/bin/gateway.sh"  # Linux
 # Per macOS: JETBRAINS_GATEWAY="/Applications/JetBrains Gateway.app/Contents/MacOS/jetbrains-gateway"
 
 if [ ! -f "$JETBRAINS_GATEWAY" ]; then

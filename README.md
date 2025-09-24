@@ -1,52 +1,52 @@
-# Collegarti a un GitHub Codespace con JetBrains Gateway (via SSH + gh)
+# Connect to a GitHub Codespace with JetBrains Gateway (via SSH + gh)
 
-Per usare JetBrains Gateway (IntelliJ, WebStorm, PyCharm, ecc.) con un GitHub Codespace, è necessario che il tunnel SSH venga gestito da GitHub CLI (`gh`). Di seguito i passaggi consigliati e robusti.
+To use JetBrains Gateway (IntelliJ, WebStorm, PyCharm, etc.) with a GitHub Codespace, the SSH tunnel must be managed by the GitHub CLI (`gh`). Below are the recommended and reliable steps.
 
 ---
 
-## 1) Prerequisiti
+## 1) Prerequisites
 
 - GitHub CLI (`gh`) → https://cli.github.com/
-- JetBrains Gateway (standalone o tramite JetBrains Toolbox)
-- Nessuna configurazione speciale lato Codespace: Gateway installerà automaticamente il backend IDE al primo accesso.
+- JetBrains Gateway (standalone or via JetBrains Toolbox)
+- No special configuration is required on the Codespace side: Gateway will automatically install the IDE backend on first access.
 
 ---
 
-## 2) Autenticazione con GitHub CLI
+## 2) Authentication with GitHub CLI
 
 ```bash
 gh auth login
 ```
 
-- Seleziona GitHub.com
-- Accedi via browser quando richiesto
-- La scelta del protocollo per Git (HTTPS/SSH) non incide sul funzionamento di Codespaces via `gh`.
+- Select GitHub.com
+- Log in via browser when prompted
+- The choice of Git protocol (HTTPS/SSH) does not affect how Codespaces works via `gh`.
 
-Puoi verificare di essere autenticato con:
+You can verify that you are authenticated with:
 ```bash
 gh auth status
 ```
 
 ---
 
-## 3) Preparare la configurazione SSH dei Codespaces
+## 3) Prepare the SSH configuration for Codespaces
 
-1. (Facoltativo) Elenca i Codespaces disponibili:
+1. (Optional) List the available Codespaces:
    ```bash
    gh codespace list
    ```
 
-2. Genera/aggiorna un file SSH dedicato ai Codespaces:
+2. Generate/update a dedicated SSH config file for Codespaces:
    ```bash
    gh codespace ssh --config > ~/.ssh/codespaces
    ```
 
-3. Assicurati che il tuo `~/.ssh/config` includa il file dedicato (aggiungi questa riga una sola volta):
+3. Ensure that your `~/.ssh/config` includes the dedicated file (add this line only once):
    ```bash
    printf "Include ~/.ssh/codespaces\n" >> ~/.ssh/config
    ```
 
-Dopo il passaggio 2, nel file `~/.ssh/codespaces` troverai voci del tipo:
+After step 2, in the file `~/.ssh/codespaces` you will find entries like:
 ```ini
 Host cool-lemur-ab12cd
   User codespace
@@ -55,35 +55,35 @@ Host cool-lemur-ab12cd
   ProxyCommand ...
 ```
 
-Suggerimento: prima di usare Gateway, prova la connessione SSH dal terminale:
+Tip: before using Gateway, test the SSH connection from the terminal:
 ```bash
 ssh cool-lemur-ab12cd
 ```
 
 ---
 
-## 4) Connessione con JetBrains Gateway
+## 4) Connect with JetBrains Gateway
 
-1. Apri JetBrains Gateway
-2. Seleziona “Connect via SSH”
-3. Nel campo Host inserisci l’alias dal tuo `~/.ssh/config`, ad esempio:
+1. Open JetBrains Gateway
+2. Select “Connect via SSH”
+3. In the Host field, enter the alias from your `~/.ssh/config`, for example:
    ```bash
    cool-lemur-ab12cd
    ```
-4. Il campo User in genere non serve (è già definito in config come `codespace`)
-5. Procedi: Gateway si connetterà e installerà il backend IDE sul Codespace
-6. Seleziona l’IDE JetBrains da usare (IntelliJ, WebStorm, ecc.)
+4. The User field is usually not needed (it is already defined in config as `codespace`)
+5. Proceed: Gateway will connect and install the IDE backend on the Codespace
+6. Choose the JetBrains IDE to use (IntelliJ, WebStorm, etc.)
 
 ---
 
-## 5) Note importanti
+## 5) Important Notes
 
-- Gli endpoint dei Codespaces possono cambiare dopo sospensione/riattivazione. In tal caso rigenera il file:
+- Codespaces endpoints can change after suspension/resumption. In that case, regenerate the file:
   ```bash
   gh codespace ssh --config > ~/.ssh/codespaces
   ```
-  (Non è necessario ri-modificare `~/.ssh/config` se hai già aggiunto l’Include.)
+  (You do not need to re-edit `~/.ssh/config` if you have already added the `Include` line.)
 
-- Automazione consigliata: esegui il comando qui sopra prima di aprire Gateway, oppure crea uno script/alias che aggiorna la configurazione e poi avvia Gateway.
+- Recommended automation: run the command above before opening Gateway, or create a script/alias that updates the configuration and then launches Gateway.
 
-Hai bisogno di uno script Bash che faccia tutto in un colpo solo? Posso prepararlo.
+Need a Bash script to do everything in one go? I can prepare it.
